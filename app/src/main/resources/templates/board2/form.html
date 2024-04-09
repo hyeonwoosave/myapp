@@ -44,14 +44,37 @@
 
 <script>
   $(document).ready(function() {
-
     $('#summernote').summernote({
       height: 300,
-      width: 500
+      width: 500,
+      callbacks: {
+        onInit: function() {
+          console.log('Summernote is launched');
+        },
+        onImageUpload: function(files) {
+          let data = new FormData();
+          for (const file of files) {
+            data.append("files", file);
+          }
+          $.ajax({
+            url: 'file/upload',
+            type: 'POST',
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            data: data
+          })
+          .done(function(result) {
+            if (result == "fail") {
+              alert('로그인 하세요!');
+              return;
+            }
+          });
+        }
+      }
     });
 
   });
-
 </script>
 
 </body>
